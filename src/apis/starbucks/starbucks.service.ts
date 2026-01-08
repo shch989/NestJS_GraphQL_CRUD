@@ -16,11 +16,24 @@ export class StarbucksService {
             caffeine: 20.4,
         }
     ]
+
+    private findIndexByIdOrThrow(id: string): number {
+        const index = this.starbucks.findIndex(
+            (el) => el.id === id,
+        );
+
+        if (index === -1) {
+            throw new Error('존재하지 않는 상품입니다');
+        }
+
+        return index;
+    }
+
     findAll() {
         return this.starbucks
     }
 
-    create({createStarbucksInput}) {
+    create({ createStarbucksInput }) {
         const id = uuidv4();
 
         const newStarbucks = {
@@ -29,19 +42,13 @@ export class StarbucksService {
         }
 
         this.starbucks.push(newStarbucks)
-        
+
         console.log(newStarbucks)
         return '등록에 성공하였습니다.'
     }
 
-    update({id, updateStarbucksInput}) {
-        const index = this.starbucks.findIndex(
-            (el) => el.id === id,
-        )
-
-        if (index === -1) {
-            throw new Error('존재하지 않는 상품입니다')
-        }
+    update({ id, updateStarbucksInput }) {
+        const index = this.findIndexByIdOrThrow(id)
 
         this.starbucks[index] = {
             ...this.starbucks[index],
@@ -51,15 +58,9 @@ export class StarbucksService {
         return this.starbucks[index]
     }
 
-    delete({id}) {
-        const index = this.starbucks.findIndex(
-            (el) => el.id === id,
-        )
+    delete({ id }) {
+        const index = this.findIndexByIdOrThrow(id)
 
-        if (index === -1) {
-            throw new Error('존재하지 않는 상품입니다')
-        }
-        
         this.starbucks.splice(index, 1)
         return true;
     }
